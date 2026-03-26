@@ -1,0 +1,6 @@
+# Supabase Edge Functions (deploy separately via supabase CLI)
+supabase/
+
+# OS files
+.DS_Store
+Thumbs.db
