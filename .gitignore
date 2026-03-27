@@ -5,3 +5,12 @@ supabase/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# 依賴套件（npm install 可重新產生）
+node_modules/
+
+# 測試覆蓋率報告（執行時產生）
+coverage/
+
+# Claude Code 本機設定
+.claude/
