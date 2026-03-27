@@ -822,19 +822,19 @@
       }
 
       if (SHARE_TOKEN) {
-        // 先確認是否已有 session（OAuth callback 回來的情況）
+        // 分享連結模式：無論已登入或訪客，處理完後都直接 return，
+        // 不可註冊 onAuthStateChange，否則 SIGNED_IN / INITIAL_SESSION 事件會
+        // 再次呼叫 onSignedIn → renderHome()，把分享行程畫面覆蓋掉（空白畫面）。
         const { data: { session } } = await supabaseClient.auth.getSession();
         if (session?.user) {
-          // 已登入（或剛完成 OAuth）帶著分享連結 → 設定登入狀態，並顯示分享行程（保留 auth bar）
+          // 已登入：顯示帳號資訊，再顯示分享行程
           await onSignedIn(session.user);
           await loadSharedTrip(SHARE_TOKEN, true);
-          // 繼續往下，讓 onAuthStateChange 被註冊
         } else {
-          // 未登入 → 訪客瀏覽模式，保留原本的 return
-          // 不可註冊 onAuthStateChange，否則 INITIAL_SESSION null 會觸發 onSignedOut 破壞訪客視圖
+          // 訪客：純讀取分享行程
           await loadSharedTrip(SHARE_TOKEN);
-          return;
         }
+        return; // 分享模式不監聽 auth 狀態變化，避免覆蓋畫面
       } else {
         const { data: { session } } = await supabaseClient.auth.getSession();
         if (session?.user) await onSignedIn(session.user);
@@ -850,7 +850,7 @@
       if (!SUPABASE_ENABLED) return;
       await supabaseClient.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: window.location.href }
+        options: { redirectTo: window.location.origin + window.location.pathname }
       });
     }
 
