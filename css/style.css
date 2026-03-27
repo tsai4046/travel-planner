@@ -117,7 +117,7 @@
     /* Trip cards */
     .trip-cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
       gap: 1.2rem;
       max-width: 960px;
       width: 100%;
@@ -265,16 +265,17 @@
 
     .day-pill {
       flex-shrink: 0;
-      padding: 0.4rem 0.9rem;
+      padding: 0.35rem 0.7rem;
       border-radius: 999px;
       border: 1.5px solid var(--border);
       background: transparent;
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 600;
       color: var(--muted);
       cursor: pointer;
       transition: all 0.18s;
       white-space: nowrap;
+      min-height: 44px;
     }
 
     .day-pill:hover {
@@ -791,9 +792,34 @@
         grid-template-columns: 3rem 1fr;
         gap: 0.7rem;
       }
+    /* Table responsiveness */
+    .ticket-section {
+      overflow-x: auto;
+    }
+    .ticket-section table {
+      width: 100%;
+      min-width: 300px;
+    }
+    th, td {
+      padding: 0.5rem 0.8rem;
+      font-size: 0.75rem;
+    }
     }
 
     /* ══ EDITOR MODAL ══ */
+    /* iPhone 16 specific adjustments */
+    @media (max-width: 428px) {
+      /* Reduce padding on main containers */
+      #trip-selector { padding: 2rem 1rem; }
+      .home-title { font-size: clamp(1.8rem, 6vw, 3rem); }
+      .home-subtitle { font-size: 0.85rem; }
+      .trip-card { padding: 1.5rem 1.2rem; }
+      .add-trip-card { min-height: 140px; }
+      .detail-header, .day-header { padding: 0.7rem 0.9rem 0; }
+      .day-pill { padding: 0.35rem 0.7rem; font-size: 0.68rem; min-height: 44px; }
+      .weather-badge, .food-section, .accom-card { margin-left: 0.9rem; margin-right: 0.9rem; }
+      button, .btn-ghost, .btn-primary { min-height: 44px; }
+    }
     #editor-modal {
       display: none;
       position: fixed;
