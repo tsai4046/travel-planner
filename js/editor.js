@@ -181,9 +181,9 @@ function renderDayEditor(idx) {
     <div id="fm-d-timeline">${ day.timeline.map((tl, i) => `
       <div class="tl-row idx-${i}">
         <div class="drag-handle" style="display:flex;align-items:center;justify-content:center;cursor:grab;color:var(--muted);"><i class="fas fa-bars"></i></div>
-        <div class="form-group"><input type="text" value="${tl.time||''}" placeholder="09:00" class="tl-time"></div>
-        <div class="form-group"><input type="text" value="${tl.title||''}" placeholder="地點/事件" class="tl-title"></div>
-        <div class="form-group"><input type="text" value="${tl.desc||''}" placeholder="備註說明" class="tl-desc"></div>
+        <div class="form-group tl-time-wrap"><input type="text" value="${tl.time||''}" placeholder="09:00" class="tl-time"></div>
+        <div class="form-group tl-title-wrap"><input type="text" value="${tl.title||''}" placeholder="地點/事件" class="tl-title"></div>
+        <div class="form-group tl-desc-wrap"><input type="text" value="${tl.desc||''}" placeholder="備註說明" class="tl-desc"></div>
         <button class="btn-ghost tl-addr-toggle ${tl.address ? 'has-address' : ''}" type="button" onclick="toggleAddressUI(this)" title="填寫地址"><i class="fas fa-map-marker-alt"></i></button>
         <button class="btn-ghost" onclick="delTimelineUI(this)" style="color:var(--danger);border-color:transparent;padding:0.5rem;"><i class="fas fa-times"></i></button>
         <div class="tl-address-row" style="${tl.address ? '' : 'display:none'}">

@@ -860,6 +860,25 @@
         grid-template-columns: 3rem 1fr;
         gap: 0.7rem;
       }
+
+      /* 編輯器側邊欄縮小 */
+      .days-sidebar { width: 72px; padding: 0.5rem; }
+      .day-sel-btn  { font-size: 0.7rem; padding: 0.4rem 0.2rem; text-align: center; }
+      .day-add-btn  { font-size: 0.65rem; padding: 0.4rem 0.2rem; }
+
+      /* tl-row 行動版：4欄×3排堆疊 */
+      .tl-row {
+        grid-template-columns: 24px 1fr 28px auto;
+        grid-template-rows: auto auto auto;
+      }
+      .tl-row .drag-handle            { grid-column: 1; grid-row: 1; }
+      .tl-row .tl-time-wrap           { grid-column: 2; grid-row: 1; }
+      .tl-row .tl-addr-toggle         { grid-column: 3; grid-row: 1; }
+      .tl-row > .btn-ghost:not(.tl-addr-toggle) { grid-column: 4; grid-row: 1; }
+      .tl-row .tl-title-wrap          { grid-column: 1 / -1; grid-row: 2; }
+      .tl-row .tl-desc-wrap           { grid-column: 1 / -1; grid-row: 3; }
+      .tl-address-row                 { grid-row: 4; }
+
     /* Table responsiveness */
     .ticket-section {
       overflow-x: auto;
