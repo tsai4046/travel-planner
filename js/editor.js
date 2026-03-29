@@ -182,16 +182,13 @@ function renderDayEditor(idx) {
       <div class="tl-row idx-${i}">
         <div class="drag-handle" style="display:flex;align-items:center;justify-content:center;cursor:grab;color:var(--muted);"><i class="fas fa-bars"></i></div>
         <div class="form-group"><input type="text" value="${tl.time||''}" placeholder="09:00" class="tl-time"></div>
-        <div class="form-group" style="display:flex;gap:4px;">
-          <input type="text" value="${tl.title||''}" placeholder="地點/事件" class="tl-title ${tl.lat ? 'has-coord' : ''}" style="flex:1">
-          <button class="btn-ghost" type="button" onclick="fetchCoordinates(this)" title="自動取得經緯度" style="color:var(--muted);padding:0 0.4rem;">
-            <i class="fas fa-map-marker-alt"></i>
-          </button>
-          <input type="hidden" class="tl-lat" value="${tl.lat||''}">
-          <input type="hidden" class="tl-lon" value="${tl.lon||''}">
-        </div>
+        <div class="form-group"><input type="text" value="${tl.title||''}" placeholder="地點/事件" class="tl-title"></div>
         <div class="form-group"><input type="text" value="${tl.desc||''}" placeholder="備註說明" class="tl-desc"></div>
+        <button class="btn-ghost tl-addr-toggle ${tl.address ? 'has-address' : ''}" type="button" onclick="toggleAddressUI(this)" title="填寫地址"><i class="fas fa-map-marker-alt"></i></button>
         <button class="btn-ghost" onclick="delTimelineUI(this)" style="color:var(--danger);border-color:transparent;padding:0.5rem;"><i class="fas fa-times"></i></button>
+        <div class="tl-address-row" style="${tl.address ? '' : 'display:none'}">
+          <input type="text" value="${tl.address||''}" placeholder="地址或 Maps 搜尋關鍵字" class="tl-address">
+        </div>
       </div>
     `).join('') }</div>
 
@@ -247,9 +244,17 @@ window.delFoodUI = function(btn) {
 
 window.addTimelineUI = function() {
   saveDayState();
-  editingTrip.days[currentActiveDayIndex].timeline.push({time:"", title:"", desc:""});
+  editingTrip.days[currentActiveDayIndex].timeline.push({time:"", title:"", desc:"", address:""});
   renderDayEditor(currentActiveDayIndex);
 }
+window.toggleAddressUI = function(btn) {
+  const row = btn.closest('.tl-row');
+  const addrRow = row.querySelector('.tl-address-row');
+  const isHidden = addrRow.style.display === 'none';
+  addrRow.style.display = isHidden ? '' : 'none';
+  if (isHidden) addrRow.querySelector('.tl-address').focus();
+};
+
 window.delTimelineUI = function(btn) {
   const row = btn.closest('.tl-row');
   if (row) row.remove();
@@ -284,14 +289,9 @@ function saveDayState() {
     const data = {
       time: timeEl.value,
       title: titleEl.value,
-      desc: descEl.value
+      desc: descEl.value,
+      address: row.querySelector('.tl-address')?.value || ''
     };
-    const lat = row.querySelector('.tl-lat')?.value;
-    const lon = row.querySelector('.tl-lon')?.value;
-    if (lat && lon) {
-      data.lat = parseFloat(lat);
-      data.lon = parseFloat(lon);
-    }
     return data;
   }).filter(t => t !== null);
 

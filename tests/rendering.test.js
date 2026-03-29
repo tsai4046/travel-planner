@@ -124,19 +124,14 @@ describe('renderDay', () => {
     expect(html).not.toContain('food-section');
   });
 
-  test('有座標的 timeline 項目會渲染地圖佔位符', () => {
+  test('timeline 項目不渲染地圖佔位符（地圖功能已移除）', () => {
     const withCoord = {
       ...baseDay,
       id: 'day5',
       timeline: [{ time: '09:00', title: '淺草寺', desc: '', lat: 35.7148, lon: 139.7967 }],
     };
     const html = renderDay(withCoord);
-    expect(html).toContain('id="map-day5"');
-  });
-
-  test('無座標的 timeline 項目不渲染地圖', () => {
-    const html = renderDay(baseDay); // baseDay 的 timeline 沒有座標
-    expect(html).not.toContain('id="map-day1"');
+    expect(html).not.toContain('id="map-day5"');
   });
 
   test('Day chip 數字不足兩位補零', () => {

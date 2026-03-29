@@ -81,7 +81,7 @@ function renderTripContent(trip) {
       ${renderFlight(trip.flights.inbound, 'status-in')}
     </div>`;
 
-  const statusMap   = { ok: 'status-ok', ready: 'status-ready', onsite: 'status-onsite', pending: 'status-pending' };
+  const statusMap = { ok: 'status-ok', ready: 'status-ready', onsite: 'status-onsite', pending: 'status-pending' };
   const statusLabel = { ok: '已完成', ready: '憑證準備', onsite: '現場購買', pending: '待購' };
   const ticketsHTML = `
     <div class="ticket-section">
@@ -138,7 +138,7 @@ function renderFlight(f, statusId) {
 function renderDay(day) {
   const e = window.escapeHTML;
   const chipColors = ['', '#4f7ef8', '#38b27e', '#e05c5c', '#9b6fe8', '#f09030', '#2eadd4', '#e8609a', '#6b8c6b'];
-  const chipColor  = chipColors[day.day] || '#888';
+  const chipColor = chipColors[day.day] || '#888';
 
   const tlItems = day.timeline.map((item) => `
     <div class="tl-item">
@@ -146,6 +146,7 @@ function renderDay(day) {
       <div class="tl-body">
         <div class="tl-title">${e(item.title)}</div>
         ${item.desc ? `<div class="tl-desc">${e(item.desc)}</div>` : ''}
+        ${item.address ? `<div class="tl-addr"><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.address)}" target="_blank" rel="noopener noreferrer"><i class="fas fa-map-marker-alt" style="font-size:0.50rem;margin-right:3px"></i>${e(item.address)}</a></div>` : ''}
         ${item.transport ? renderTransport(item.transport) : ''}
       </div>
     </div>
@@ -179,9 +180,6 @@ function renderDay(day) {
       </div>
     </div>` : '';
 
-  const hasMap = day.timeline.some(t => t.lat && t.lon);
-  const mapHTML = hasMap ? `<div class="day-map" id="map-${day.id}"></div>` : '';
-
   return `
     <div class="day-section" id="${day.id}" style="animation-delay:${(day.day - 1) * 0.05}s">
       <div class="day-header">
@@ -199,7 +197,6 @@ function renderDay(day) {
         <i class="fas fa-circle-notch fa-spin" style="font-size:0.7rem;color:var(--muted)"></i>
         <span style="color:var(--muted)">載入天氣中⋯</span>
       </div>
-      ${mapHTML}
       <div class="timeline">${tlItems}</div>
       ${foodHTML}
       ${accomHTML}
