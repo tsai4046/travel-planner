@@ -11,6 +11,14 @@ function renderHome() {
         <span><i class="fas fa-calendar-alt" style="font-size:0.65rem;color:var(--gold)"></i> ${trip.dates}</span>
         <span><i class="fas fa-map-marked-alt" style="font-size:0.65rem;color:var(--gold)"></i> ${trip.days.length} 天行程</span>
       </div>
+      <div class="trip-card-actions">
+        <button class="card-action-btn" onclick="event.stopPropagation(); copyTrip('${trip.id}')" title="複製行程">
+          <i class="fas fa-copy"></i> 複製
+        </button>
+        <button class="card-action-btn danger" onclick="event.stopPropagation(); deleteTrip('${trip.id}')" title="刪除行程">
+          <i class="fas fa-trash-alt"></i> 刪除
+        </button>
+      </div>
     </div>
   `).join('') + `
     <div class="trip-card add-trip-card" onclick="openEditor(null)">
@@ -303,5 +311,5 @@ function loadFlightStatus() {
 
 // ── 測試環境 export（不影響瀏覽器行為）──
 if (typeof module !== 'undefined') {
-  module.exports = { renderFlight, renderDay, renderTransport, toggleTransport };
+  module.exports = { renderHome, renderFlight, renderDay, renderTransport, toggleTransport };
 }

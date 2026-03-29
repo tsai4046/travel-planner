@@ -1,14 +1,14 @@
 /**
  * tests/rendering.test.js
- * 測試 js/rendering.js — renderFlight, renderDay, renderTransport, toggleTransport
+ * 測試 js/rendering.js — renderHome, renderFlight, renderDay, renderTransport, toggleTransport
  *
- * 注意：renderHome / showTrip / showHome 依賴全域 trips / currentTrip，
+ * 注意：showTrip / showHome 依賴全域 trips / currentTrip，
  * 屬於整合層行為，這裡只測試「回傳 HTML 字串」的純輸出函式。
  */
 
 // rendering.js 內部使用 window.escapeHTML，需先載入 utils.js
 require('../js/utils.js');
-const { renderFlight, renderDay, renderTransport, toggleTransport } = require('../js/rendering.js');
+const { renderHome, renderFlight, renderDay, renderTransport, toggleTransport } = require('../js/rendering.js');
 
 // ─────────────────────────────────────────
 // renderFlight
@@ -212,5 +212,84 @@ describe('toggleTransport', () => {
     toggleTransport('abc');
     expect(document.getElementById('ts-abc').classList.contains('open')).toBe(false);
     expect(document.getElementById('td-abc').classList.contains('open')).toBe(false);
+  });
+});
+
+// ─────────────────────────────────────────
+// renderHome — 行程卡片含複製 / 刪除按鈕
+// ─────────────────────────────────────────
+describe('renderHome', () => {
+  const sampleTrip = {
+    id: 'trip-001',
+    title: '日本東京',
+    year: '2026',
+    country: '日本',
+    dates: '3/1~3/5',
+    coverEmoji: '🗼',
+    days: [{ id: 'd1' }, { id: 'd2' }],
+    flights: {},
+  };
+
+  beforeEach(() => {
+    document.body.innerHTML = '<div id="trip-cards-container"></div>';
+    global.trips = [JSON.parse(JSON.stringify(sampleTrip))];
+  });
+
+  test('每張卡片含有複製按鈕（fa-copy icon）', () => {
+    renderHome();
+    const html = document.getElementById('trip-cards-container').innerHTML;
+    expect(html).toContain('fa-copy');
+    expect(html).toContain('複製');
+  });
+
+  test('每張卡片含有刪除按鈕（fa-trash-alt icon）', () => {
+    renderHome();
+    const html = document.getElementById('trip-cards-container').innerHTML;
+    expect(html).toContain('fa-trash-alt');
+    expect(html).toContain('刪除');
+  });
+
+  test('複製按鈕 onclick 帶入正確 tripId 並呼叫 copyTrip', () => {
+    renderHome();
+    const html = document.getElementById('trip-cards-container').innerHTML;
+    expect(html).toContain("copyTrip('trip-001')");
+  });
+
+  test('刪除按鈕 onclick 帶入正確 tripId 並呼叫 deleteTrip', () => {
+    renderHome();
+    const html = document.getElementById('trip-cards-container').innerHTML;
+    expect(html).toContain("deleteTrip('trip-001')");
+  });
+
+  test('按鈕有 stopPropagation 防止觸發 showTrip', () => {
+    renderHome();
+    const html = document.getElementById('trip-cards-container').innerHTML;
+    expect(html).toContain('stopPropagation');
+  });
+
+  test('trip-card-actions 區塊正確渲染', () => {
+    renderHome();
+    expect(document.querySelector('.trip-card-actions')).not.toBeNull();
+    expect(document.querySelectorAll('.card-action-btn').length).toBe(2);
+  });
+
+  test('顯示行程天數（days.length）', () => {
+    renderHome();
+    const html = document.getElementById('trip-cards-container').innerHTML;
+    expect(html).toContain('2 天行程');
+  });
+
+  test('最後一張卡片為「新增旅程」', () => {
+    renderHome();
+    const html = document.getElementById('trip-cards-container').innerHTML;
+    expect(html).toContain('新增旅程');
+    expect(html).toContain('add-trip-card');
+  });
+
+  test('沒有行程時只有「新增旅程」卡片，無 trip-card-actions', () => {
+    global.trips = [];
+    renderHome();
+    expect(document.querySelector('.trip-card-actions')).toBeNull();
+    expect(document.getElementById('trip-cards-container').innerHTML).toContain('新增旅程');
   });
 });

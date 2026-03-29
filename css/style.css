@@ -173,6 +173,49 @@
       gap: 0.3rem;
     }
 
+    .trip-card-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.8rem;
+      padding-top: 0.8rem;
+      border-top: 1px solid var(--border);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .trip-card:hover .trip-card-actions {
+      opacity: 1;
+    }
+
+    .card-action-btn {
+      flex: 1;
+      padding: 0.35rem 0.5rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+    }
+
+    .card-action-btn:hover {
+      background: var(--d1);
+      color: white;
+      border-color: var(--d1);
+    }
+
+    .card-action-btn.danger:hover {
+      background: var(--danger);
+      border-color: var(--danger);
+      color: white;
+    }
+
     .add-trip-card {
       background: var(--white);
       border-radius: 16px;

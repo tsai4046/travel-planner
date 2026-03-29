@@ -142,6 +142,61 @@ async function deleteFromCloud(tripId) {
     .eq('trip_key', tripId);
 }
 
+window.copyTrip = async function(tripId) {
+  const original = trips.find(t => t.id === tripId);
+  if (!original) return;
+
+  const copy = JSON.parse(JSON.stringify(original));
+  copy.id = 'trip-' + Date.now();
+  copy.title = original.title.replace('\n', ' ') + '（副本）';
+  copy._localUpdatedAt = Date.now();
+
+  trips.push(copy);
+
+  const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  stored.push(copy);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
+
+  renderHome();
+
+  if (currentUser && typeof saveToCloud === 'function') {
+    try {
+      await saveToCloud(copy);
+      showToast('✅ 行程已複製並同步至雲端', 'success');
+    } catch(e) {
+      showToast('行程已複製（雲端同步失敗）', 'warn');
+    }
+  } else {
+    showToast('✅ 行程已複製', 'success');
+  }
+};
+
+window.deleteTrip = async function(tripId) {
+  const trip = trips.find(t => t.id === tripId);
+  if (!trip) return;
+
+  if (!confirm(`確定要刪除「${trip.title.replace('\n', ' ')}」嗎？此操作無法復原。`)) return;
+
+  trips.splice(trips.findIndex(t => t.id === tripId), 1);
+  if (currentTrip && currentTrip.id === tripId) currentTrip = null;
+
+  const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(stored.filter(t => t.id !== tripId)));
+
+  renderHome();
+
+  if (currentUser) {
+    try {
+      await deleteFromCloud(tripId);
+      showToast('✅ 行程已刪除', 'success');
+    } catch(e) {
+      showToast('本機已刪除（雲端同步失敗）', 'warn');
+    }
+  } else {
+    showToast('✅ 行程已刪除', 'success');
+  }
+};
+
 // ═══════════════════════════════════════
 // 分享連結
 // ═══════════════════════════════════════
@@ -336,3 +391,10 @@ initAuth().then(() => {
     renderHome();
   }
 });
+
+// ── 測試環境 export（不影響瀏覽器行為）──
+if (typeof module !== 'undefined') {
+  module.exports = {
+    _setCurrentUser: (u) => { currentUser = u; },
+  };
+}
